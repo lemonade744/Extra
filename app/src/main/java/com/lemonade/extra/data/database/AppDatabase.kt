@@ -1,19 +1,11 @@
-package com.lemonade.extra.data.database // <-- Твой пакет!
+package com.lemonade.extra.data.database
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.lemonade.extra.data.dao.ExerciseDao
-import com.lemonade.extra.data.dao.MuscleGroupDao
-import com.lemonade.extra.data.dao.UserDao
-import com.lemonade.extra.data.dao.WorkoutDao
-import com.lemonade.extra.data.entity.ExerciseEntity
-import com.lemonade.extra.data.entity.MuscleGroupEntity
-import com.lemonade.extra.data.entity.UserEntity
-import com.lemonade.extra.data.entity.WorkoutEntity
-import com.lemonade.extra.data.entity.WorkoutExerciseEntity
-import com.lemonade.extra.data.entity.WorkoutSetEntity
+import com.lemonade.extra.data.dao.*
+import com.lemonade.extra.data.entity.*
 
 @Database(
     entities = [
@@ -21,24 +13,36 @@ import com.lemonade.extra.data.entity.WorkoutSetEntity
         MuscleGroupEntity::class,
         ExerciseEntity::class,
         WorkoutEntity::class,
-        WorkoutExerciseEntity::class, // <-- Добавили
-        WorkoutSetEntity::class       // <-- Добавили
+        WorkoutExerciseEntity::class,
+        WorkoutSetEntity::class,
+        WeightHistoryEntity::class,
+        ReminderEntity::class,
+        WorkoutMuscleGroupEntity::class,
+        TemplateEntity::class,
+        TemplateExerciseEntity::class,
+        TemplateMuscleGroupEntity::class
     ],
-    version = 3, // <-- Поменяли версию
+    version = 7,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
-    // Подключаем наши DAO
     abstract fun userDao(): UserDao
     abstract fun muscleGroupDao(): MuscleGroupDao
     abstract fun exerciseDao(): ExerciseDao
     abstract fun workoutDao(): WorkoutDao
+    abstract fun weightDao(): WeightDao
+    abstract fun reminderDao(): ReminderDao
+    abstract fun templateDao(): TemplateDao
+
+    // Пока мы не написали для них методы, просто объявим,
+    // чтобы Room знал, что они существуют. (Создадим их позже, когда дойдем до UI).
+    // Если они красные, закомментируй их до следующего шага.
+    // Но лучше создать пустые интерфейсы (см. ниже).
 
     companion object {
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
-        // Синглтон для получения доступа к базе из любого места приложения
         fun getDatabase(context: Context): AppDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
@@ -46,7 +50,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "workout_database"
                 )
-                    .fallbackToDestructiveMigration() // <-- Добавили (при смене версии БД просто пересоздастся)
+                    .fallbackToDestructiveMigration() // Сносим старую БД при смене версии
                     .addCallback(PrepopulateCallback())
                     .build()
                 INSTANCE = instance

@@ -1,4 +1,4 @@
-package com.lemonade.extra.data.dao // Твой package!
+package com.lemonade.extra.data.dao
 
 import androidx.room.Dao
 import androidx.room.Insert

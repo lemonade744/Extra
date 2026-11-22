@@ -11,6 +11,9 @@ interface MuscleGroupDao {
     @Query("SELECT * FROM muscle_groups")
     suspend fun getAllGroups(): List<MuscleGroupEntity>
 
+    @Query("SELECT * FROM muscle_groups")
+    suspend fun getAllGroupsList(): List<MuscleGroupEntity>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertGroups(groups: List<MuscleGroupEntity>)
 }

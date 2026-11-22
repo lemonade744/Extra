@@ -19,9 +19,11 @@ data class WorkoutSetEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     val workoutExerciseId: Long,
-    val setIndex: Int, // Номер подхода (1, 2, 3...)
+    val setIndex: Int,
     val reps: Int? = null,
     val weightKg: Double? = null,
-    val durationSec: Int? = null, // Для планки или бега
-    val completed: Boolean = false // Сделан подход или еще в процессе
+    val durationSec: Int? = null,
+    val distanceM: Double? = null,
+    val restSec: Int? = null,
+    val completed: Boolean = false
 )
